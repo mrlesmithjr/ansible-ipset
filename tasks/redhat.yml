@@ -1,0 +1,21 @@
+---
+- name: redhat | Enabling EPEL Repo
+  yum:
+    name: epel-release
+    state: present
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Installing ipset
+  yum:
+    name: ipset
+    state: present
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Installing ipset
+  dnf:
+    name: ipset
+    state: present
+  become: true
+  when: ansible_distribution == "Fedora"

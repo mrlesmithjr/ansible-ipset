@@ -1,0 +1,38 @@
+---
+- hosts: test_nodes
+  vars:
+    ipset_clear: true
+    ipset_enable_dshield_block_list: true
+    ipset_iptables_default_allow_output_ports:
+      - ports:
+         - 53
+         - 123
+        protocol: udp
+      - ports:
+         - 22
+         - 80
+         - 443
+        protocol: tcp
+    ipset_iptables_default_input_policy: DROP
+    ipset_iptables_default_output_policy: DROP
+    ipset_iptables_dshield_chains:
+      - INPUT
+      - OUTPUT
+    ipset_rules:
+      - name: safe_input
+        addresses:
+          - 10.0.0.0/8
+        chain: INPUT
+        maxelem: 65536
+        policy: ACCEPT
+        dports:
+          - 22
+          - 2202
+          - 2222
+        protocol: tcp
+        # sports:
+        #   - 22
+        state: present
+        type: hash:net
+  roles:
+    - role: ansible-ipset

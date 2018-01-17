@@ -1,0 +1,106 @@
+---
+- name: configure | Downloading DShield.org Block List
+  get_url:
+    url: http://feeds.dshield.org/block.txt
+    dest: "{{ ipset_dshield_block_file }}"
+  delegate_to: localhost
+  when: ipset_enable_dshield_block_list
+
+- name: configure | Generating DShield.org YAML Block List
+  template:
+    src: block.yml.j2
+    dest: "{{ ipset_dshield_block_file_yaml }}"
+  delegate_to: localhost
+  when: ipset_enable_dshield_block_list
+
+- name: configure | Importing dshield_block_list Variables
+  include_vars:
+    file: "{{ ipset_dshield_block_file_yaml }}"
+  when: ipset_enable_dshield_block_list
+
+- name: configure | Ensuring {{ ipset_config_file|dirname }} Directory Exists
+  file:
+    path: "{{ ipset_config_file|dirname }}"
+    state: directory
+  become: true
+
+- name: configure | Generating ipset Rules {{ ipset_config_file }}
+  template:
+    src: ipsets.j2
+    dest: "{{ ipset_config_file }}"
+  become: true
+
+- name: configure | Ensuring {{ ipset_iptables_config_file|dirname }} Directory Exists
+  file:
+    path: "{{ ipset_iptables_config_file|dirname }}"
+    state: directory
+  become: true
+
+- name: configure | Generating IPTables Rules {{ ipset_iptables_config_file }}
+  template:
+    src: iptables.j2
+    dest: "{{ ipset_iptables_config_file }}"
+  become: true
+  register: _ipset_iptables_rules_generated
+
+# We clear all existing IPTables rules and ipset rules to ensure that we are in
+# a default state to allow proper configuration of new rules.
+- name: configure | Clearing IPTables Rules and ipset Rules
+  shell: >
+         iptables -P INPUT ACCEPT &&
+         iptables -P FORWARD ACCEPT &&
+         iptables -P OUTPUT ACCEPT &&
+         iptables -F &&
+         iptables -X &&
+         ipset destroy
+  become: true
+  when: ipset_clear
+
+- name: configure | Restoring ipset Rules {{ ipset_config_file }}
+  shell: ipset restore -! < {{ ipset_config_file }}
+  become: true
+  # We always need to restore to ensure that current rules are loaded. This
+  # will account for someone removing rules on a host and the configuration does
+  # not change from above. We allow this task to not trigger a change to maintain
+  # idempotency.
+  changed_when: ipset_clear
+
+# We need to do this the first time when setting up connection tracking in order
+# to not lose connection over SSH.
+- name: configure | Setting Up Default Connection Tracking (One-Time)
+  shell: >
+         iptables -I INPUT 1 -m conntrack --ctstate ESTABLISHED,RELATED &&
+         iptables -I OUTPUT 1 -m conntrack --ctstate ESTABLISHED,RELATED
+  become: true
+  when: _ipset_iptables_rules_generated['changed']
+
+- name: configure | Restoring IPTables Rules {{ ipset_iptables_config_file }}
+  command: iptables-restore {{ ipset_iptables_config_file }}
+  become: true
+  # We always need to restore to ensure that current rules are loaded. This
+  # will account for someone removing rules on a host and the configuration does
+  # not change from above. We allow this task to not trigger a change to maintain
+  # idempotency.
+  changed_when: ipset_clear
+
+- name: configure | Creating Firewall Load On Reboot Script
+  template:
+    src: etc/network/if-pre-up.d/firewall.j2
+    dest: /etc/network/if-pre-up.d/firewall
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o="
+  become: true
+  when: ansible_os_family == "Debian"
+
+- name: configure | Saving IPTables To Load On Reboot
+  shell: iptables-save > /etc/sysconfig/iptables
+  become: true
+  when: ansible_os_family == "RedHat"
+
+- name: configure | Ensuring IPTables Service Loads On Reboot
+  service:
+    name: iptables
+    enabled: true
+  become: true
+  when: ansible_os_family == "RedHat"

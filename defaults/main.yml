@@ -1,0 +1,87 @@
+---
+# defaults file for ansible-ipset
+
+# Defines if all current ipset rules and iptables rules should be cleared during
+# provisioning. This helps to ensure that there are no lingering rules as well as
+# blocking your access during provisioning new rules.
+ipset_clear: false
+
+ipset_config_file: /etc/ipset/ipsets
+
+ipset_dshield_block_list: "{{ lookup('file', ipset_dshield_block_file) }}"
+
+ipset_dshield_block_file: /tmp/block.txt
+
+ipset_dshield_block_file_yaml: /tmp/block.yml
+
+# Defines if DShield top 20 block lists should be defined from https://www.dshield.org/block.txt
+ipset_enable_dshield_block_list: false
+
+ipset_iptables_config_file: /etc/iptables/iptables
+
+# Defines the IPTables mode to track connection state
+# -m conntrack --ctstate
+# -m state --state
+ipset_iptables_connection_state_mode: -m conntrack --ctstate
+
+ipset_iptables_default_allow_output_ports: []
+  # - ports:
+  #    - 53
+  #    - 123
+  #   protocol: udp
+  # - ports:
+  #    - 22
+  #    - 80
+  #    - 443
+  #   protocol: tcp
+
+# Defines default IPTables FORWARD policy
+ipset_iptables_default_forward_policy: ACCEPT
+
+# Defines default IPTables INPUT policy
+ipset_iptables_default_input_policy: ACCEPT
+
+# Defines default IPTables OUTPUT policy
+ipset_iptables_default_output_policy: ACCEPT
+
+# Defines which chains to apply DShield blocks on
+ipset_iptables_dshield_chains: []
+  # - INPUT
+  # # - FORWARD
+  # - OUTPUT
+
+ipset_rules: []
+  # - name: badips
+  #   addresses:
+  #     - 192.168.1.0/24
+  #     - 192.168.2.0/24
+  #   chain: INPUT
+  #   maxelem: 65536
+  #   policy: DROP
+  #   state: present
+  #   type: hash:net
+  # - name: fullbogons-ipv4
+  #   addresses:
+  #     # - 10.0.0.0/8
+  #     - 172.16.0.0/12
+  #     - 192.168.0.0/16
+  #   chain: INPUT
+  #   maxelem: 65536
+  #   policy: DROP
+  #   state: present
+  #   type: hash:net
+  # - name: safe_input
+  #   addresses:
+  #     - 10.0.0.0/8
+  #   chain: INPUT
+  #   maxelem: 65536
+  #   policy: ACCEPT
+  #   dports:
+  #     - 22
+  #     - 2202
+  #     - 2222
+  #   protocol: tcp
+  #   # sports:
+  #   #   - 22
+  #   state: present
+  #   type: hash:net

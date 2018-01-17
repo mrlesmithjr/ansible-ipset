@@ -1,0 +1,6 @@
+#! /usr/bin/env bash
+
+{{ ansible_managed|comment }}
+
+/sbin/ipset restore -! < {{ ipset_config_file }}
+/sbin/iptables-restore {{ ipset_iptables_config_file }}

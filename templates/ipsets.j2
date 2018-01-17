@@ -1,0 +1,19 @@
+flush
+{% if ipset_rules is defined %}
+{%   for _ipset_rule in ipset_rules %}
+{%     if _ipset_rule['state'] == "present" %}
+create {{ _ipset_rule['name'] }} {{ _ipset_rule['type'] }} maxelem {{ _ipset_rule['maxelem'] }}
+{%       if _ipset_rule['addresses'] is defined %}
+{%         for _ipset_rule_address in _ipset_rule['addresses'] %}
+add {{ _ipset_rule['name'] }} {{ _ipset_rule_address }}
+{%         endfor %}
+{%       endif %}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+{% if ipset_enable_dshield_block_list %}
+create dshield_block_list hash:net maxelem 65536
+{%   for _dshield_block_list in dshield_block_list %}
+add dshield_block_list {{ _dshield_block_list['start'] }}-{{ _dshield_block_list['end'] }}
+{%   endfor %}
+{% endif %}

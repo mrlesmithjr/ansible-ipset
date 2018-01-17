@@ -1,0 +1,12 @@
+---
+# - name: debian | Installing iptables-persistent
+#   apt:
+#     name: iptables-persistent
+#     state: present
+#   become: true
+
+- name: debian | Installing ipset
+  apt:
+    name: ipset
+    state: present
+  become: true
