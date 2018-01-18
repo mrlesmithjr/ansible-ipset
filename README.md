@@ -1,20 +1,22 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
--   [ansible-ipset](#ansible-ipset)
-    -   [Related Info](#related-info)
-    -   [Requirements](#requirements)
-    -   [Role Variables](#role-variables)
-    -   [Dependencies](#dependencies)
-    -   [Example Playbook](#example-playbook)
-    -   [Examples](#examples)
-        -   [Example ipset list](#example-ipset-list)
-        -   [Example iptables list](#example-iptables-list)
-    -   [License](#license)
-    -   [Author Information](#author-information)
+- [ansible-ipset](#ansible-ipset)
+  - [Related Info](#related-info)
+  - [Using Block Lists](#using-block-lists)
+    - [Current supported block lists:](#current-supported-block-lists)
+    - [Enabling supported block lists:](#enabling-supported-block-lists)
+  - [IP Sets Rules Management](#ip-sets-rules-management)
+  - [Requirements](#requirements)
+  - [Role Variables](#role-variables)
+  - [Dependencies](#dependencies)
+  - [Example Playbook](#example-playbook)
+  - [Examples](#examples)
+    - [Example ipset list](#example-ipset-list)
+    - [Example iptables list](#example-iptables-list)
+  - [License](#license)
+  - [Author Information](#author-information)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -57,6 +59,15 @@ ipset_enable_dshield_block_list: false
 # Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
 ipset_enable_firehol_block_list: false
 ```
+
+## IP Sets Rules Management
+
+We have added functionality to check if existing rules exist by the same name. If
+they do exist, a temporary rule set is created which will then be populated. Once
+the population has completed the existing rule set will be swapped with the
+temporary rule set, and then the temporary rule set will be destroyed. This will
+ensure that there is not a time period in which all rules are flushed and then
+repopulated therefore leaving a short period of time of being out of scope.
 
 ## Requirements
 
