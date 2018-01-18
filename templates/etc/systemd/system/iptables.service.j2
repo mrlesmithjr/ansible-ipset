@@ -1,0 +1,16 @@
+{{ ansible_managed|comment }}
+
+[Unit]
+Description=iptables persistent rule service
+After=ipset.service
+Wants=ipset.service
+ConditionFileNotEmpty={{ ipset_iptables_config_file }}
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/iptables-restore {{ ipset_iptables_config_file }}
+ExecStop=/sbin/iptables-save {{ ipset_iptables_config_file }}
+
+[Install]
+WantedBy=multi-user.target

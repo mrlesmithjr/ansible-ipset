@@ -1,0 +1,16 @@
+{{ ansible_managed|comment }}
+
+[Unit]
+Description=ipset persistent rule service
+Before=network-pre.target
+Wants=network-pre.target
+ConditionFileNotEmpty={{ ipset_config_file }}
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/ipset -exist -file {{ ipset_config_file }} restore
+ExecStop=/sbin/ipset -file {{ ipset_config_file }} save
+
+[Install]
+WantedBy=multi-user.target

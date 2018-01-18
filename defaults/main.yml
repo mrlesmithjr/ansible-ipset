@@ -6,7 +6,7 @@
 # blocking your access during provisioning new rules.
 ipset_clear: false
 
-ipset_config_file: /etc/ipset/ipsets
+ipset_config_file: /etc/ipset/ipset
 
 ipset_dshield_block_list: "{{ lookup('file', ipset_dshield_block_file) }}"
 
