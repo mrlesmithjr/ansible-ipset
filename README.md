@@ -1,8 +1,9 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 - [ansible-ipset](#ansible-ipset)
+  - [Related Info](#related-info)
   - [Requirements](#requirements)
   - [Role Variables](#role-variables)
   - [Dependencies](#dependencies)
@@ -22,6 +23,11 @@ An [Ansible](https://www.ansible.com) role to install/configure [ipset](http://i
 > NOTE: This role will also manage [IPTables](http://netfilter.org/projects/iptables/index.html)
 > rules as part of configuring ipset. Any existing IPTables rules **WILL** be
 > removed.
+
+## Related Info
+
+I have also put together a [blogpost](http://everythingshouldbevirtual.com/automation/ansible-ip-sets-and-dshield-block-list/)
+which is related to this role.
 
 ## Requirements
 
