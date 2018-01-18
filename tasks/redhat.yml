@@ -6,9 +6,23 @@
   become: true
   when: ansible_distribution != "Fedora"
 
+- name: redhat | Installing iptables-services
+  yum:
+    name: iptables-services
+    state: present
+  become: true
+  when: ansible_distribution != "Fedora"
+
 - name: redhat | Installing ipset
   yum:
     name: ipset
+    state: present
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Installing ipset-service
+  yum:
+    name: ipset-service
     state: present
   become: true
   when: ansible_distribution != "Fedora"
@@ -19,3 +33,24 @@
     state: present
   become: true
   when: ansible_distribution == "Fedora"
+
+- name: redhat | Uninstall FirewallD
+  yum:
+    name: firewalld
+    state: absent
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Ensuring iptables Service Loads On Reboot
+  service:
+    name: iptables
+    enabled: true
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Ensuring ipset Service Loads On Reboot
+  service:
+    name: ipset
+    enabled: true
+  become: true
+  when: ansible_distribution != "Fedora"

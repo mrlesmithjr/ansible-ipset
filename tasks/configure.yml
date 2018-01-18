@@ -93,14 +93,12 @@
   become: true
   when: ansible_os_family == "Debian"
 
-- name: configure | Saving IPTables To Load On Reboot
-  shell: iptables-save > /etc/sysconfig/iptables
+- name: configure | Saving ipset Rules To Load On Reboot
+  shell: ipset save > /etc/sysconfig/ipset
   become: true
   when: ansible_os_family == "RedHat"
 
-- name: configure | Ensuring IPTables Service Loads On Reboot
-  service:
-    name: iptables
-    enabled: true
+- name: configure | Saving iptables Rules To Load On Reboot
+  shell: iptables-save > /etc/sysconfig/iptables
   become: true
   when: ansible_os_family == "RedHat"
