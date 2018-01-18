@@ -1,12 +1,34 @@
 ---
-# - name: debian | Installing iptables-persistent
-#   apt:
-#     name: iptables-persistent
-#     state: present
-#   become: true
-
 - name: debian | Installing ipset
   apt:
     name: ipset
     state: present
   become: true
+
+- name: debian | Creating Firewall Load On Reboot Script
+  template:
+    src: etc/network/if-pre-up.d/firewall.j2
+    dest: /etc/network/if-pre-up.d/firewall
+    owner: root
+    group: root
+    mode: "u=rwx,g=rwx,o="
+  become: true
+  when: ansible_service_mgr == "upstart"
+
+- name: debian | Creating ipset systemd Service
+  template:
+    src: etc/systemd/system/ipset.service.j2
+    dest: /etc/systemd/system/ipset.service
+  become: true
+  notify:
+    - reload ipset
+  when: ansible_service_mgr == "systemd"
+
+- name: debian | Creating iptables systemd Service
+  template:
+    src: etc/systemd/system/iptables.service.j2
+    dest: /etc/systemd/system/iptables.service
+  become: true
+  notify:
+    - reload iptables
+  when: ansible_service_mgr == "systemd"

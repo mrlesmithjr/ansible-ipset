@@ -34,7 +34,7 @@
   become: true
   when: ansible_distribution == "Fedora"
 
-- name: redhat | Uninstall FirewallD
+- name: redhat | Uninstalling FirewallD
   yum:
     name: firewalld
     state: absent

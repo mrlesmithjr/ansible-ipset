@@ -10,11 +10,14 @@ galaxy_info:
     - name: Debian
       versions:
         - jessie
+        - stretch
     - name: EL
       versions:
         - 7
     - name: Ubuntu
       versions:
+        - artful
+        - trusty
         - xenial
 
   galaxy_tags:

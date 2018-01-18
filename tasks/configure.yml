@@ -1,23 +1,4 @@
 ---
-- name: configure | Downloading DShield.org Block List
-  get_url:
-    url: http://feeds.dshield.org/block.txt
-    dest: "{{ ipset_dshield_block_file }}"
-  delegate_to: localhost
-  when: ipset_enable_dshield_block_list
-
-- name: configure | Generating DShield.org YAML Block List
-  template:
-    src: block.yml.j2
-    dest: "{{ ipset_dshield_block_file_yaml }}"
-  delegate_to: localhost
-  when: ipset_enable_dshield_block_list
-
-- name: configure | Importing dshield_block_list Variables
-  include_vars:
-    file: "{{ ipset_dshield_block_file_yaml }}"
-  when: ipset_enable_dshield_block_list
-
 - name: configure | Ensuring {{ ipset_config_file|dirname }} Directory Exists
   file:
     path: "{{ ipset_config_file|dirname }}"
@@ -82,54 +63,6 @@
   # not change from above. We allow this task to not trigger a change to maintain
   # idempotency.
   changed_when: ipset_clear
-
-- name: configure | Creating Firewall Load On Reboot Script
-  template:
-    src: etc/network/if-pre-up.d/firewall.j2
-    dest: /etc/network/if-pre-up.d/firewall
-    owner: root
-    group: root
-    mode: "u=rwx,g=rwx,o="
-  become: true
-  when: >
-        ansible_os_family == "Debian" and
-        ansible_service_mgr == "upstart"
-
-- name: configure | Creating ipset SystemD Service
-  template:
-    src: etc/systemd/system/ipset.service.j2
-    dest: /etc/systemd/system/ipset.service
-  become: true
-  register: _ipset_systemd_service
-  when: >
-        ansible_os_family == "Debian" and
-        ansible_service_mgr == "systemd"
-
-- name: configure | Creating iptables SystemD Service
-  template:
-    src: etc/systemd/system/iptables.service.j2
-    dest: /etc/systemd/system/iptables.service
-  become: true
-  register: _ipset_iptables_systemd_service
-  when: >
-        ansible_os_family == "Debian" and
-        ansible_service_mgr == "systemd"
-
-- name: configure | Reloading SystemD
-  systemd:
-    daemon_reload: true
-    enabled: true
-    name: ipset
-  become: true
-  when: _ipset_systemd_service['changed']
-
-- name: configure | Reloading SystemD
-  systemd:
-    daemon_reload: true
-    enabled: true
-    name: iptables
-  become: true
-  when: _ipset_iptables_systemd_service['changed']
 
 - name: configure | Saving ipset Rules To Load On Reboot
   shell: ipset save > /etc/sysconfig/ipset

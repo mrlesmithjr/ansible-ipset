@@ -6,4 +6,10 @@
 - include: redhat.yml
   when: ansible_os_family == "RedHat"
 
+- include: dshield.yml
+  when: ipset_enable_dshield_block_list
+
+- include: firehol.yml
+  when: ipset_enable_firehol_block_list
+
 - include: configure.yml
