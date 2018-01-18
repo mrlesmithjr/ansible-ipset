@@ -1,18 +1,20 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [ansible-ipset](#ansible-ipset)
-  - [Related Info](#related-info)
-  - [Requirements](#requirements)
-  - [Role Variables](#role-variables)
-  - [Dependencies](#dependencies)
-  - [Example Playbook](#example-playbook)
-  - [Examples](#examples)
-    - [Example ipset list](#example-ipset-list)
-    - [Example iptables list](#example-iptables-list)
-  - [License](#license)
-  - [Author Information](#author-information)
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+-   [ansible-ipset](#ansible-ipset)
+    -   [Related Info](#related-info)
+    -   [Requirements](#requirements)
+    -   [Role Variables](#role-variables)
+    -   [Dependencies](#dependencies)
+    -   [Example Playbook](#example-playbook)
+    -   [Examples](#examples)
+        -   [Example ipset list](#example-ipset-list)
+        -   [Example iptables list](#example-iptables-list)
+    -   [License](#license)
+    -   [Author Information](#author-information)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -26,8 +28,32 @@ An [Ansible](https://www.ansible.com) role to install/configure [ipset](http://i
 
 ## Related Info
 
-I have also put together a [blogpost](http://everythingshouldbevirtual.com/automation/ansible-ip-sets-and-dshield-block-list/)
+We have also put together a [blog post](http://everythingshouldbevirtual.com/automation/ansible-ip-sets-and-dshield-block-list/)
 which is related to this role.
+
+## Using Block Lists
+
+We have also included the ability to use various different IP block lists to
+generate `ipset` rules and `iptables` rules. These can be easily implemented to
+block traffic inbound, outbound, or both inboud/outbound.
+
+### Current supported block lists:
+
+-   [DShield](https://www.dshield.org/)
+-   [FireHOL](http://iplists.firehol.org/)
+
+### Enabling supported block lists:
+
+In order to enable the supported block lists you must set the following variables
+to `true` as their defaults are `false`:
+
+```yaml
+# Defines if DShield top 20 block lists should be defined from https://www.dshield.org/block.txt
+ipset_enable_dshield_block_list: false
+
+# Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
+ipset_enable_firehol_block_list: false
+```
 
 ## Requirements
 
