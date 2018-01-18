@@ -1,4 +1,10 @@
 ---
+- name: configure | Capturing ipset Names
+  command: ipset list -n
+  become: true
+  register: _ipset_list_names
+  changed_when: false
+
 - name: configure | Ensuring {{ ipset_config_file|dirname }} Directory Exists
   file:
     path: "{{ ipset_config_file|dirname }}"
@@ -26,7 +32,7 @@
 
 # We clear all existing IPTables rules and ipset rules to ensure that we are in
 # a default state to allow proper configuration of new rules.
-- name: configure | Clearing IPTables Rules and ipset Rules
+- name: configure | Clearing iptables Rules and ipset Rules
   shell: >
          iptables -P INPUT ACCEPT &&
          iptables -P FORWARD ACCEPT &&
@@ -38,7 +44,7 @@
   when: ipset_clear
 
 - name: configure | Restoring ipset Rules {{ ipset_config_file }}
-  shell: ipset restore -! < {{ ipset_config_file }}
+  shell: ipset restore -exist < {{ ipset_config_file }}
   become: true
   # We always need to restore to ensure that current rules are loaded. This
   # will account for someone removing rules on a host and the configuration does
