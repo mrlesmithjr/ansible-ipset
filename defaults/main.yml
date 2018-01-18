@@ -17,6 +17,15 @@ ipset_dshield_block_file_yaml: /tmp/block.yml
 # Defines if DShield top 20 block lists should be defined from https://www.dshield.org/block.txt
 ipset_enable_dshield_block_list: false
 
+# Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
+ipset_enable_firehol_block_list: false
+
+ipset_firehol_block_list: "{{ lookup('file', ipset_firehol_block_file) }}"
+
+ipset_firehol_block_file: /tmp/firehol_level1.netset
+
+ipset_firehol_block_file_yaml: /tmp/firehol_level1.yml
+
 ipset_iptables_config_file: /etc/iptables/iptables
 
 # Defines the IPTables mode to track connection state
@@ -46,6 +55,12 @@ ipset_iptables_default_output_policy: ACCEPT
 
 # Defines which chains to apply DShield blocks on
 ipset_iptables_dshield_chains: []
+  # - INPUT
+  # # - FORWARD
+  # - OUTPUT
+
+# Defines which chains to apply FireHOL blocks on
+ipset_iptables_firehol_chains: []
   # - INPUT
   # # - FORWARD
   # - OUTPUT

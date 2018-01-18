@@ -17,3 +17,9 @@ create dshield_block_list hash:net maxelem 65536
 add dshield_block_list {{ _dshield_block_list['start'] }}-{{ _dshield_block_list['end'] }}
 {%   endfor %}
 {% endif %}
+{% if ipset_enable_firehol_block_list %}
+create firehol_block_list hash:net maxelem 65536
+{%   for _firehol_block_list in firehol_block_list %}
+add firehol_block_list {{ _firehol_block_list }}
+{%   endfor %}
+{% endif %}
