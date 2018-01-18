@@ -20,6 +20,9 @@ ipset_enable_dshield_block_list: false
 # Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
 ipset_enable_firehol_block_list: false
 
+# Defines if Spamhaus block lists should be defined from https://www.spamhaus.org/drop/
+ipset_enable_spamhaus_block_list: false
+
 ipset_firehol_block_list: "{{ lookup('file', ipset_firehol_block_file) }}"
 
 ipset_firehol_block_file: /tmp/firehol_level1.netset
@@ -65,6 +68,12 @@ ipset_iptables_firehol_chains: []
   # # - FORWARD
   # - OUTPUT
 
+# Defines which chains to apply Spamhaus blocks on
+ipset_iptables_spamhaus_chains: []
+  # - INPUT
+  # # - FORWARD
+  # - OUTPUT
+
 ipset_rules: []
   # - name: badips
   #   addresses:
@@ -100,3 +109,13 @@ ipset_rules: []
   #   #   - 22
   #   state: present
   #   type: hash:net
+
+ipset_spamhaus_block_file_yaml: /tmp/spamhaus.yml
+
+ipset_spamhaus_drop_block_list: "{{ lookup('file', ipset_spamhaus_drop_block_file) }}"
+
+ipset_spamhaus_drop_block_file: /tmp/drop.txt
+
+ipset_spamhaus_edrop_block_list: "{{ lookup('file', ipset_spamhaus_edrop_block_file) }}"
+
+ipset_spamhaus_edrop_block_file: /tmp/edrop.txt

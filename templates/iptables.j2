@@ -59,4 +59,20 @@
 {%     endif %}
 {%   endfor %}
 {% endif %}
+{% if ipset_enable_spamhaus_block_list and ipset_iptables_spamhaus_chains is defined %}
+{%   for _chain in ipset_iptables_spamhaus_chains %}
+{%     if _chain|upper == "INPUT" %}
+-A {{ _chain|upper }} -m set --match-set spamhaus_drop_block_list src -j DROP
+-A {{ _chain|upper }} -m set --match-set spamhaus_edrop_block_list src -j DROP
+{%     elif _chain|upper == "FORWARD" %}
+-A {{ _chain|upper }} -m set --match-set spamhaus_drop_block_list src -j DROP
+-A {{ _chain|upper }} -m set --match-set spamhaus_drop_block_list dst -j DROP
+-A {{ _chain|upper }} -m set --match-set spamhaus_edrop_block_list src -j DROP
+-A {{ _chain|upper }} -m set --match-set spamhaus_edrop_block_list dst -j DROP
+{%     elif _chain|upper == "OUTPUT" %}
+-A {{ _chain|upper }} -m set --match-set spamhaus_drop_block_list dst -j DROP
+-A {{ _chain|upper }} -m set --match-set spamhaus_edrop_block_list dst -j DROP
+{%     endif %}
+{%   endfor %}
+{% endif %}
 COMMIT

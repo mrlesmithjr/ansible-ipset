@@ -12,4 +12,7 @@
 - include: firehol.yml
   when: ipset_enable_firehol_block_list
 
+- include: spamhaus.yml
+  when: ipset_enable_spamhaus_block_list
+
 - include: configure.yml

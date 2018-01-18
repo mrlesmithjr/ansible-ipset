@@ -23,3 +23,13 @@ create firehol_block_list hash:net maxelem 65536
 add firehol_block_list {{ _firehol_block_list }}
 {%   endfor %}
 {% endif %}
+{% if ipset_enable_spamhaus_block_list %}
+create spamhaus_drop_block_list hash:net maxelem 65536
+create spamhaus_edrop_block_list hash:net maxelem 65536
+{%   for _spamhaus_drop_block_list in spamhaus_drop_block_list %}
+add spamhaus_drop_block_list {{ _spamhaus_drop_block_list }}
+{%   endfor %}
+{%   for _spamhaus_edrop_block_list in spamhaus_edrop_block_list %}
+add spamhaus_edrop_block_list {{ _spamhaus_edrop_block_list }}
+{%   endfor %}
+{% endif %}

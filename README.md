@@ -41,6 +41,9 @@ block traffic inbound, outbound, or both inboud/outbound.
 
 -   [DShield](https://www.dshield.org/)
 -   [FireHOL](http://iplists.firehol.org/)
+-   [Spamhaus DROP](https://www.spamhaus.org/faq/section/DROP%20FAQ)
+    -   DROP
+    -   EDROP
 
 ### Enabling supported block lists:
 
@@ -70,6 +73,22 @@ ipset_enable_firehol_block_list: false
 ## Examples
 
 ### Example ipset list
+
+Displaying the list of ipset rule names:
+
+```bash
+vagrant@node0:~$ sudo ipset list -n
+safe_input
+dshield_block_list
+firehol_block_list
+spamhaus_drop_block_list
+spamhaus_edrop_block_list
+```
+
+Displaying the complete list of ipset rules:
+
+> NOTE: This list is just an example and does not show all of the ipset rules
+> shown above.
 
 ```bash
 vagrant@node0:~$ sudo ipset list
@@ -114,13 +133,16 @@ Members:
 ### Example iptables list
 
 ```bash
-[vagrant@node0 ~]$ sudo iptables -L -n -v
+vagrant@node0:~$ sudo iptables -L -v -n
 Chain INPUT (policy DROP 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
-   65  5541 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+   31  3457 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
     1    44 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 22,2202,2222 ctstate NEW match-set safe_input src
     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list src
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list src
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list src
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list src
 
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
@@ -128,10 +150,13 @@ Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 Chain OUTPUT (policy DROP 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
-   22  4257 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate ESTABLISHED
-   33  1988 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 53,123 ctstate NEW
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 22,80 ctstate NEW
+   23  4533 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate ESTABLISHED
+    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 53,123 ctstate NEW
+    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 22,80,443 ctstate NEW
     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list dst
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list dst
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list dst
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list dst
 ```
 
 ## License
