@@ -63,6 +63,10 @@
         # sports:
         #   - 22
         state: present
+        states:
+          - new
+          # - related
+          # - established
         type: hash:net
   roles:
     - role: ansible-ipset

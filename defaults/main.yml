@@ -112,6 +112,10 @@ ipset_rules: []
   #   maxelem: 65536
   #   policy: DROP
   #   state: present
+  #   states:
+  #     - new
+  #     # - related
+  #     # - established
   #   type: hash:net
   # - name: fullbogons-ipv4
   #   addresses:
@@ -122,6 +126,10 @@ ipset_rules: []
   #   maxelem: 65536
   #   policy: DROP
   #   state: present
+  #   states:
+  #     - new
+  #     # - related
+  #     # - established
   #   type: hash:net
   # - name: safe_input
   #   addresses:
@@ -137,6 +145,10 @@ ipset_rules: []
   #   # sports:
   #   #   - 22
   #   state: present
+  #   states:
+  #     - new
+  #     # - related
+  #     # - established
   #   type: hash:net
 
 ipset_spamhaus_block_file_yaml: /tmp/spamhaus.yml

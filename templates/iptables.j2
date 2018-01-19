@@ -27,14 +27,18 @@
 {%-      if _ipset_rule['protocol'] is defined %} -p {{ _ipset_rule['protocol'] }}{% endif %}
 {%-      if _ipset_rule['sports'] is defined %} -m multiport --sports {{ _ipset_rule['sports']|join(',') }}{% endif %}
 {%-      if _ipset_rule['dports'] is defined %} -m multiport --dports {{ _ipset_rule['dports']|join(',') }}{% endif %}
-{%-        if _ipset_rule['chain']|upper == "INPUT" %}
- {{ ipset_iptables_connection_state_mode }} new -m set --match-set {{ _ipset_rule['name'] }} src -j {{ _ipset_rule['policy']|upper }}
-{%         elif _ipset_rule['chain']|upper == "FORWARD" %}
- {{ ipset_iptables_connection_state_mode }} new -m set --match-set {{ _ipset_rule['name'] }} src -j {{ _ipset_rule['policy']|upper }}
- {{ ipset_iptables_connection_state_mode }} new -m set --match-set {{ _ipset_rule['name'] }} dst -j {{ _ipset_rule['policy']|upper }}
-{%         elif _ipset_rule['chain']|upper == "OUTPUT" %}
- {{ ipset_iptables_connection_state_mode }} new -m set --match-set {{ _ipset_rule['name'] }} dst -j {{ _ipset_rule['policy']|upper }}
-{%         endif %}
+{%-      if _ipset_rule['chain']|upper == "INPUT" %}
+{%-        if _ipset_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_rule['states']|join(',') }}{% endif %}
+ -m set --match-set {{ _ipset_rule['name'] }} src -j {{ _ipset_rule['policy']|upper }}
+{%       elif _ipset_rule['chain']|upper == "FORWARD" %}
+{%-        if _ipset_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_rule['states']|join(',') }}{% endif %}
+ -m set --match-set {{ _ipset_rule['name'] }} src -j {{ _ipset_rule['policy']|upper }}
+{%-        if _ipset_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_rule['states']|join(',') }}{% endif %}
+ -m set --match-set {{ _ipset_rule['name'] }} dst -j {{ _ipset_rule['policy']|upper }}
+{%       elif _ipset_rule['chain']|upper == "OUTPUT" %}
+{%-        if _ipset_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_rule['states']|join(',') }}{% endif %}
+ -m set --match-set {{ _ipset_rule['name'] }} dst -j {{ _ipset_rule['policy']|upper }}
+{%       endif %}
 {%     endif %}
 {%   endfor %}
 {% endif %}
