@@ -11,7 +11,7 @@
     dest: /etc/network/if-pre-up.d/firewall
     owner: root
     group: root
-    mode: "u=rwx,g=rwx,o="
+    mode: "u=rwx,g=rx,o=rx"
   become: true
   when: ansible_service_mgr == "upstart"
 
