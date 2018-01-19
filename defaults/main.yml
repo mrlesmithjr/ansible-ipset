@@ -36,16 +36,45 @@ ipset_iptables_config_file: /etc/iptables/iptables
 # -m state --state
 ipset_iptables_connection_state_mode: -m conntrack --ctstate
 
-ipset_iptables_default_allow_output_ports: []
-  # - ports:
-  #    - 53
-  #    - 123
-  #   protocol: udp
-  # - ports:
-  #    - 22
-  #    - 80
-  #    - 443
-  #   protocol: tcp
+# Define rules which do not fit within the management of an ip set.
+## Because we cannot define any ip such as 0.0.0.0/0, these rules will define
+## raw iptables rules which do not fall within an ip set. Examples would be ping,
+## dns, http, https rules which should be allowed to reach any address. If a rule
+## should not be allowed to reach any address then an ipset_rules definition
+## should be used.
+# ipset_iptables_custom_rules: []
+#   - dports: []
+#     sports: []
+#     protocol: icmp
+#     chain: OUTPUT
+#     policy: ACCEPT
+#     states:
+#       - new
+#       # - related
+#       # - established
+#   - dports:
+#       - 53
+#       - 123
+#     sports: []
+#     protocol: udp
+#     chain: OUTPUT
+#     policy: ACCEPT
+#     states:
+#       - new
+#       # - related
+#       # - established
+#   - dports:
+#       - 22
+#       - 80
+#       - 443
+#     sports: []
+#     protocol: tcp
+#     chain: OUTPUT
+#     policy: ACCEPT
+#     states:
+#       - new
+#       # - related
+#       # - established
 
 # Defines default IPTables FORWARD policy
 ipset_iptables_default_forward_policy: ACCEPT

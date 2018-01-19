@@ -11,12 +11,14 @@
 -A OUTPUT -o lo -j ACCEPT
 -A OUTPUT {{ ipset_iptables_connection_state_mode }} established -j ACCEPT
 {% endif %}
-{% if ipset_iptables_default_allow_output_ports is defined %}
-{%   if ipset_iptables_default_output_policy|upper != "ACCEPT" %}
-{%     for _allow_port in ipset_iptables_default_allow_output_ports %}
--A OUTPUT -p {{ _allow_port['protocol'] }} -m multiport --dports {{ _allow_port['ports']|join(',') }} {{ ipset_iptables_connection_state_mode }} new -j ACCEPT
-{%     endfor %}
-{%   endif %}
+{% if ipset_iptables_custom_rules is defined %}
+{%   for _ipset_iptables_custom_rule in ipset_iptables_custom_rules %}
+-A {{ _ipset_iptables_custom_rule['chain'] }} -p {{ _ipset_iptables_custom_rule['protocol'] }}
+{%-    if _ipset_iptables_custom_rule['dports'] != [] %} -m multiport --dports {{ _ipset_iptables_custom_rule['dports']|join(',') }}{% endif %}
+{%-    if _ipset_iptables_custom_rule['sports'] != [] %} -m multiport --sports {{ _ipset_iptables_custom_rule['sports']|join(',') }}{% endif %}
+{%-    if _ipset_iptables_custom_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_iptables_custom_rule['states']|join(',') }}{% endif %}
+ -j {{ _ipset_iptables_custom_rule['policy'] }}
+{%   endfor %}
 {% endif %}
 {% if ipset_rules is defined %}
 {%   for _ipset_rule in ipset_rules %}

@@ -1,20 +1,42 @@
 ---
 - hosts: test_nodes
   vars:
-    ipset_clear: true
     ipset_enable_dshield_block_list: true
     ipset_enable_firehol_block_list: true
     ipset_enable_spamhaus_block_list: true
-    ipset_iptables_default_allow_output_ports:
-      - ports:
-         - 53
-         - 123
+    ipset_iptables_custom_rules:
+      - dports: []
+        sports: []
+        protocol: icmp
+        chain: OUTPUT
+        policy: ACCEPT
+        states:
+          - new
+          # - related
+          # - established
+      - dports:
+          - 53
+          - 123
+        sports: []
         protocol: udp
-      - ports:
-         - 22
-         - 80
-         - 443
+        chain: OUTPUT
+        policy: ACCEPT
+        states:
+          - new
+          # - related
+          # - established
+      - dports:
+          - 22
+          - 80
+          - 443
+        sports: []
         protocol: tcp
+        chain: OUTPUT
+        policy: ACCEPT
+        states:
+          - new
+          # - related
+          # - established
     ipset_iptables_default_input_policy: DROP
     ipset_iptables_default_output_policy: DROP
     ipset_iptables_dshield_chains:
