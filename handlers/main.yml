@@ -3,13 +3,11 @@
 - name: reload ipset
   systemd:
     daemon_reload: true
-    enabled: true
     name: ipset
   become: true
 
 - name: reload iptables
   systemd:
     daemon_reload: true
-    enabled: true
     name: iptables
   become: true
