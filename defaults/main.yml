@@ -97,6 +97,27 @@ ipset_iptables_firehol_chains: []
   # # - FORWARD
   # - OUTPUT
 
+# Defines whethere dropped packets are dropped or not
+ipset_iptables_log_dropped: false
+
+# Defines the desired iptables drop chain name
+ipset_iptables_log_dropped_chain: LOGGING-DROPPED
+
+# This is the standard syslog levels. 4 is warning. You can use number from
+# the range 0 through 7.
+# 0 is emergency and 7 is debug.
+ipset_iptables_log_dropped_level: 4
+
+# Defines the maximum average matching rate for logging
+# Examples could be 2/second, 2/minute, 2/hour, 2/day
+# This is helpful when you don’t want to clutter your log messages with
+# repeated messages of the same dropped packets.
+ipset_iptables_log_dropped_limit: 2/min
+
+# You can specify any log prefix, which will be appended to the log messages
+# that will be written to the /var/log/messages file
+ipset_iptables_log_dropped_prefix: IPTables-Dropped
+
 # Defines which chains to apply Spamhaus blocks on
 ipset_iptables_spamhaus_chains: []
   # - INPUT

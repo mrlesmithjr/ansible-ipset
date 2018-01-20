@@ -1,22 +1,24 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-- [ansible-ipset](#ansible-ipset)
-  - [Related Info](#related-info)
-  - [Using Block Lists](#using-block-lists)
-    - [Current supported block lists:](#current-supported-block-lists)
-    - [Enabling supported block lists:](#enabling-supported-block-lists)
-  - [IP Sets Rules Management](#ip-sets-rules-management)
-  - [Requirements](#requirements)
-  - [Role Variables](#role-variables)
-  - [Dependencies](#dependencies)
-  - [Example Playbook](#example-playbook)
-  - [Examples](#examples)
-    - [Example ipset list](#example-ipset-list)
-    - [Example iptables list](#example-iptables-list)
-  - [License](#license)
-  - [Author Information](#author-information)
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+-   [ansible-ipset](#ansible-ipset)
+    -   [Related Info](#related-info)
+    -   [Using Block Lists](#using-block-lists)
+        -   [Current supported block lists:](#current-supported-block-lists)
+        -   [Enabling supported block lists:](#enabling-supported-block-lists)
+    -   [IP Sets Rules Management](#ip-sets-rules-management)
+    -   [Requirements](#requirements)
+    -   [Role Variables](#role-variables)
+    -   [Dependencies](#dependencies)
+    -   [Example Playbook](#example-playbook)
+    -   [Examples](#examples)
+        -   [Example ipset list](#example-ipset-list)
+        -   [Example iptables list](#example-iptables-list)
+    -   [License](#license)
+    -   [Author Information](#author-information)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -58,6 +60,9 @@ ipset_enable_dshield_block_list: false
 
 # Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
 ipset_enable_firehol_block_list: false
+
+# Defines if Spamhaus block lists should be defined from https://www.spamhaus.org/drop/
+ipset_enable_spamhaus_block_list: false
 ```
 
 ## IP Sets Rules Management
@@ -148,12 +153,13 @@ vagrant@node0:~$ sudo iptables -L -v -n
 Chain INPUT (policy DROP 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
-   31  3457 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+  824  666K ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list src
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list src
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list src
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list src
     1    44 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 22,2202,2222 ctstate NEW match-set safe_input src
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list src
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list src
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list src
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list src
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
 Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
@@ -161,13 +167,20 @@ Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
 Chain OUTPUT (policy DROP 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination
     0     0 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0
-   23  4533 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate ESTABLISHED
-    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 53,123 ctstate NEW
+  733 61601 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate ESTABLISHED
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list dst
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list dst
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list dst
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list dst
+    0     0 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate NEW
+   12   808 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 53,123 ctstate NEW
     0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            multiport dports 22,80,443 ctstate NEW
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set dshield_block_list dst
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set firehol_block_list dst
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_drop_block_list dst
-    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            match-set spamhaus_edrop_block_list dst
+    0     0 LOGGING-DROPPED  all  --  *      *       0.0.0.0/0            0.0.0.0/0
+
+Chain LOGGING-DROPPED (10 references)
+ pkts bytes target     prot opt in     out     source               destination
+    0     0 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            limit: avg 2/min burst 5 LOG flags 0 level 4 prefix "IPTables-Dropped: "
+    0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0
 ```
 
 ## License

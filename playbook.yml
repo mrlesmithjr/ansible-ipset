@@ -45,6 +45,7 @@
     ipset_iptables_firehol_chains:
       - INPUT
       - OUTPUT
+    ipset_iptables_log_dropped: true
     ipset_iptables_spamhaus_chains:
       - INPUT
       - OUTPUT
