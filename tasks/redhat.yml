@@ -68,15 +68,3 @@
         name: ipset-service
         state: present
       become: true
-
-- name: redhat | Ensuring iptables Service Loads On Reboot
-  service:
-    name: iptables
-    enabled: true
-  become: true
-
-- name: redhat | Ensuring ipset Service Loads On Reboot
-  service:
-    name: ipset
-    enabled: true
-  become: true

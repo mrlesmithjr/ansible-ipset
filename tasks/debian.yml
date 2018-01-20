@@ -5,6 +5,12 @@
     state: present
   become: true
 
+- name: debian | Installing iptables
+  apt:
+    name: iptables
+    state: present
+  become: true
+
 - name: debian | Creating Firewall Load On Reboot Script
   template:
     src: etc/network/if-pre-up.d/firewall.j2
@@ -14,21 +20,3 @@
     mode: "u=rwx,g=rx,o=rx"
   become: true
   when: ansible_service_mgr == "upstart"
-
-- name: debian | Creating ipset systemd Service
-  template:
-    src: etc/systemd/system/ipset.service.j2
-    dest: /etc/systemd/system/ipset.service
-  become: true
-  notify:
-    - reload ipset
-  when: ansible_service_mgr == "systemd"
-
-- name: debian | Creating iptables systemd Service
-  template:
-    src: etc/systemd/system/iptables.service.j2
-    dest: /etc/systemd/system/iptables.service
-  become: true
-  notify:
-    - reload iptables
-  when: ansible_service_mgr == "systemd"
