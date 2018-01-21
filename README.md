@@ -76,6 +76,11 @@ repopulated therefore leaving a short period of time of being out of scope.
 
 ## Requirements
 
+The following requirements **MUST** be met on the Ansible host that is executing
+this role:
+
+-   [python-netaddr](https://pypi.python.org/pypi/netaddr)
+
 ## Role Variables
 
 [defaults/main.yml](defaults/main.yml)
