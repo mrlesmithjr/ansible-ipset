@@ -8,6 +8,7 @@ lint:
 platforms:
   - name: extended-ubuntu
     image: jketelaar/extended-ubuntu-docker:latest
+    privileged: True
 provisioner:
   name: ansible
   lint:
