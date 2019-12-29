@@ -2,8 +2,8 @@
 # defaults file for ansible-ipset
 
 # Defines if all current ipset rules and iptables rules should be cleared during
-# provisioning. This helps to ensure that there are no lingering rules as well as
-# blocking your access during provisioning new rules.
+# provisioning. This helps to ensure that there are no lingering rules as
+# well as blocking your access during provisioning new rules.
 ipset_clear: false
 
 ipset_config_file: /etc/ipset/ipset
@@ -14,13 +14,16 @@ ipset_dshield_block_file: /tmp/block.txt
 
 ipset_dshield_block_file_yaml: /tmp/block.yml
 
-# Defines if DShield top 20 block lists should be defined from https://www.dshield.org/block.txt
+# Defines if DShield top 20 block lists should be defined from
+# https://www.dshield.org/block.txt
 ipset_enable_dshield_block_list: false
 
-# Defines if FireHOL ip lists should be defined from http://iplists.firehol.org/
+# Defines if FireHOL ip lists should be defined from
+# http://iplists.firehol.org/
 ipset_enable_firehol_block_list: false
 
-# Defines if Spamhaus block lists should be defined from https://www.spamhaus.org/drop/
+# Defines if Spamhaus block lists should be defined from
+# https://www.spamhaus.org/drop/
 ipset_enable_spamhaus_block_list: false
 
 ipset_firehol_block_list: "{{ lookup('file', ipset_firehol_block_file) }}"
@@ -38,10 +41,10 @@ ipset_iptables_connection_state_mode: -m conntrack --ctstate
 
 # Define rules which do not fit within the management of an ip set.
 ## Because we cannot define any ip such as 0.0.0.0/0, these rules will define
-## raw iptables rules which do not fall within an ip set. Examples would be ping,
-## dns, http, https rules which should be allowed to reach any address. If a rule
-## should not be allowed to reach any address then an ipset_rules definition
-## should be used.
+## raw iptables rules which do not fall within an ip set. Examples would be
+## ping, dns, http, https rules which should be allowed to reach any address.
+## If a rule should not be allowed to reach any address then an ipset_rules
+## definition should be used.
 # ipset_iptables_custom_rules: []
 #   - dports: []
 #     sports: []
@@ -87,15 +90,15 @@ ipset_iptables_default_output_policy: ACCEPT
 
 # Defines which chains to apply DShield blocks on
 ipset_iptables_dshield_chains: []
-  # - INPUT
-  # # - FORWARD
-  # - OUTPUT
+# - INPUT
+# # - FORWARD
+# - OUTPUT
 
 # Defines which chains to apply FireHOL blocks on
 ipset_iptables_firehol_chains: []
-  # - INPUT
-  # # - FORWARD
-  # - OUTPUT
+# - INPUT
+# # - FORWARD
+# - OUTPUT
 
 # Defines whethere dropped packets are dropped or not
 ipset_iptables_log_dropped: false
@@ -120,64 +123,66 @@ ipset_iptables_log_dropped_prefix: IPTables-Dropped
 
 # Defines which chains to apply Spamhaus blocks on
 ipset_iptables_spamhaus_chains: []
-  # - INPUT
-  # # - FORWARD
-  # - OUTPUT
+# - INPUT
+# # - FORWARD
+# - OUTPUT
 
 ipset_rules: []
-  # - name: badips
-  #   addresses:
-  #     - 192.168.1.0/24
-  #     - 192.168.2.0/24
-  #   chain: INPUT
-  #   maxelem: 65536
-  #   policy: DROP
-  #   state: present
-  #   states:
-  #     - new
-  #     # - related
-  #     # - established
-  #   type: hash:net
-  # - name: fullbogons-ipv4
-  #   addresses:
-  #     # - 10.0.0.0/8
-  #     - 172.16.0.0/12
-  #     - 192.168.0.0/16
-  #   chain: INPUT
-  #   maxelem: 65536
-  #   policy: DROP
-  #   state: present
-  #   states:
-  #     - new
-  #     # - related
-  #     # - established
-  #   type: hash:net
-  # - name: safe_input
-  #   addresses:
-  #     - 10.0.0.0/8
-  #   chain: INPUT
-  #   maxelem: 65536
-  #   policy: ACCEPT
-  #   dports:
-  #     - 22
-  #     - 2202
-  #     - 2222
-  #   protocol: tcp
-  #   # sports:
-  #   #   - 22
-  #   state: present
-  #   states:
-  #     - new
-  #     # - related
-  #     # - established
-  #   type: hash:net
+# - name: badips
+#   addresses:
+#     - 192.168.1.0/24
+#     - 192.168.2.0/24
+#   chain: INPUT
+#   maxelem: 65536
+#   policy: DROP
+#   state: present
+#   states:
+#     - new
+#     # - related
+#     # - established
+#   type: hash:net
+# - name: fullbogons-ipv4
+#   addresses:
+#     # - 10.0.0.0/8
+#     - 172.16.0.0/12
+#     - 192.168.0.0/16
+#   chain: INPUT
+#   maxelem: 65536
+#   policy: DROP
+#   state: present
+#   states:
+#     - new
+#     # - related
+#     # - established
+#   type: hash:net
+# - name: safe_input
+#   addresses:
+#     - 10.0.0.0/8
+#   chain: INPUT
+#   maxelem: 65536
+#   policy: ACCEPT
+#   dports:
+#     - 22
+#     - 2202
+#     - 2222
+#   protocol: tcp
+#   # sports:
+#   #   - 22
+#   state: present
+#   states:
+#     - new
+#     # - related
+#     # - established
+#   type: hash:net
 
 ipset_spamhaus_block_file_yaml: /tmp/spamhaus.yml
 
-ipset_spamhaus_drop_block_list: "{{ lookup('file', ipset_spamhaus_drop_block_file) }}"
+ipset_spamhaus_drop_block_list:
+  "{{ lookup('file', ipset_spamhaus_drop_block_file) }}"
 
 ipset_spamhaus_drop_block_file: /tmp/drop.txt
 
-ipset_spamhaus_edrop_block_list: "{{ lookup('file', ipset_spamhaus_edrop_block_file) }}"
+ipset_spamhaus_edrop_block_list:
+  "{{ lookup('file', ipset_spamhaus_edrop_block_file) }}"
 
 ipset_spamhaus_edrop_block_file: /tmp/edrop.txt

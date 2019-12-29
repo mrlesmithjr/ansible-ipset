@@ -17,7 +17,8 @@
     dest: "{{ ipset_config_file }}"
   become: true
 
-- name: configure | Ensuring {{ ipset_iptables_config_file|dirname }} Directory Exists
+- name: "configure |
+ Ensuring {{ ipset_iptables_config_file|dirname }} Directory Exists"
   file:
     path: "{{ ipset_iptables_config_file|dirname }}"
     state: directory
@@ -48,8 +49,8 @@
   become: true
   # We always need to restore to ensure that current rules are loaded. This
   # will account for someone removing rules on a host and the configuration does
-  # not change from above. We allow this task to not trigger a change to maintain
-  # idempotency.
+  # not change from above. We allow this task to not trigger a change to
+  # maintain idempotency.
   changed_when: ipset_clear
 
 # We need to do this the first time when setting up connection tracking in order
@@ -66,6 +67,6 @@
   become: true
   # We always need to restore to ensure that current rules are loaded. This
   # will account for someone removing rules on a host and the configuration does
-  # not change from above. We allow this task to not trigger a change to maintain
-  # idempotency.
+  # not change from above. We allow this task to not trigger a change to
+  # maintain idempotency.
   changed_when: ipset_clear
