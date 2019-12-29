@@ -1,4 +1,5 @@
 import os
+import pytest
 
 import testinfra.utils.ansible_runner
 
@@ -7,9 +8,11 @@ testinfra_hosts = testinfra.utils.ansible_runner.AnsibleRunner(
 ).get_hosts('all')
 
 
-def test_hosts_file(host):
-    f = host.file('/etc/hosts')
+@pytest.mark.parametrize('pkg', [
+  'iptables',
+  'ipset'
+])
+def test_ipset_install(host, pkg):
+    package = host.package(pkg)
 
-    assert f.exists
-    assert f.user == 'root'
-    assert f.group == 'root'
+    assert package.is_installed
