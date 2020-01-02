@@ -199,3 +199,8 @@ Larry Smith Jr.
 -   [EverythingShouldBeVirtual](http://everythingshouldbevirtual.com)
 -   [@mrlesmithjr](https://www.twitter.com/mrlesmithjr)
 -   <mailto:mrlesmithjr@gmail.com>
+
+Jeroen Ketelaar
+
+-   [GitHub](https://github.com/jketelaar)
+-   [@jketelaar078](https://www.twitter.com/jketelaar078)

@@ -1,6 +1,8 @@
+---
 galaxy_info:
   author: Larry Smith Jr.
-  description: An [Ansible](https://www.ansible.com) role to install/configure [ipset](http://ipset.netfilter.org/)
+  description: An [Ansible](https://www.ansible.com) role
+   to install/configure [ipset](http://ipset.netfilter.org/)
 
   license: MIT
 
