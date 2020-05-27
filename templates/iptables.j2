@@ -139,7 +139,7 @@
 {% endif %}
 {% if ipset_iptables_custom_rules is defined %}
 {%   for _ipset_iptables_custom_rule in ipset_iptables_custom_rules %}
--A {{ _ipset_iptables_custom_rule['chain'] }} -p {{ _ipset_iptables_custom_rule['protocol'] }}
+-A {{ _ipset_iptables_custom_rule['chain'] }} -p {{ _ipset_iptables_custom_rule['protocol']|default(tcp) }}
 {%-    if _ipset_iptables_custom_rule['dports'] != [] %} -m multiport --dports {{ _ipset_iptables_custom_rule['dports']|join(',') }}{% endif %}
 {%-    if _ipset_iptables_custom_rule['sports'] != [] %} -m multiport --sports {{ _ipset_iptables_custom_rule['sports']|join(',') }}{% endif %}
 {%-    if _ipset_iptables_custom_rule['states'] != [] %} {{ ipset_iptables_connection_state_mode }} {{ _ipset_iptables_custom_rule['states']|join(',') }}{% endif %}
@@ -154,7 +154,7 @@
 {%   for _ipset_rule in ipset_rules %}
 {%     if _ipset_rule['state'] == "present" %}
 -A {{ _ipset_rule['chain']|upper }}
-{%-      if _ipset_rule['protocol'] is defined %} -p {{ _ipset_rule['protocol'] }}{% endif %}
+{%-      if _ipset_rule['protocol'] is defined %} -p {{ _ipset_rule['protocol'] }}{% else %} -p tcp {% endif %}
 {%-      if _ipset_rule['sports'] is defined %} -m multiport --sports {{ _ipset_rule['sports']|join(',') }}{% endif %}
 {%-      if _ipset_rule['dports'] is defined %} -m multiport --dports {{ _ipset_rule['dports']|join(',') }}{% endif %}
 {%-      if _ipset_rule['chain']|upper == "INPUT" %}
