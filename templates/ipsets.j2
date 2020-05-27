@@ -1,7 +1,7 @@
 {% if ipset_rules is defined %}
 {%   for _ipset_rule in ipset_rules %}
 {%     if _ipset_rule['state'] == "present" %}
-{%       if _ipset_rule['name'] in _ipset_list_names['stdout_lines'] %}
+{%       if _ipset_rule['name'] in _ipset_list_names['stdout_lines']|default([]) %}
 create {{ _ipset_rule['name'] }}_temp {{ _ipset_rule['type'] }} maxelem {{ _ipset_rule['maxelem'] }}
 {%         if _ipset_rule['addresses'] is defined %}
 {%           for _ipset_rule_address in _ipset_rule['addresses'] %}
